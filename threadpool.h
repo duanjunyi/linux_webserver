@@ -13,10 +13,11 @@
 template<typename T>
 class threadpool
 {
-    /*thread_number是线程池中线程的数量，max_requests是请求队列中最多允许的、等待处理的请求的数量*/
-    threadpool(int thread_number = 8, int max_requests = 10000);
-    ~threadpool();
-    bool append(T* request);
+    public:
+        /*thread_number是线程池中线程的数量，max_requests是请求队列中最多允许的、等待处理的请求的数量*/
+        threadpool(int thread_number = 8, int max_requests = 10000);
+        ~threadpool();
+        bool append(T* request);
 
     private:
         /*工作线程运行的函数，它不断从工作队列中取出任务并执行之*/
