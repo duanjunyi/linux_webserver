@@ -22,16 +22,17 @@
 
 
 #include "locker.h"
+#include "epoll.h"
 
 
 class httpconn
 {
     public:
-        static const int FILENAME_LEN             = 200;    // 文件名的最大长度
-        static const int READ_BUFFER_SIZE         = 2048;   // 读缓冲区的大小
-        static const int WRITE_BUFFER_SIZE        = 1024;   // 写缓冲区的大小
-        static int m_epollfd;                               // 所有socket上的事件都被注册到同一个epoll内核事件中，所以设置成静态的
-        static int m_user_count;                            // 统计用户的数量
+        static const int FILENAME_LEN             = 200;          // 文件名的最大长度
+        static const int READ_BUFFER_SIZE         = 2048;         // 读缓冲区的大小
+        static const int WRITE_BUFFER_SIZE        = 1024;         // 写缓冲区的大小
+        static epollCls m_epollObj;                               // 所有socket上的事件都被注册到同一个epoll内核事件中，所以设置成静态的
+        static int m_user_count;                                  // 统计用户的数量
 
         // HTTP请求方法，这里只支持GET
         enum METHOD {GET = 0, POST, HEAD, PUT, DELETE, TRACE, OPTIONS, CONNECT};
@@ -92,7 +93,7 @@ class httpconn
 
 
         // 这一组函数被process_write调用以填充HTTP应答。
-        void unmap();
+        bool unmap();
         bool add_response(const char* format, ...);
         bool add_content(const char* content);
         bool add_content_type();
@@ -121,6 +122,8 @@ class httpconn
         int m_content_length;               // HTTP请求的消息总长度
         bool m_linger;                      // HTTP请求是否要求保持连接
 
+        int m_bytes_to_send;                // 将要发送的数据的字节数
+        int m_bytes_have_send;              // 已经发送的字节数
         char m_write_buf[WRITE_BUFFER_SIZE];// 写缓冲区
         int m_write_idx;                    // 写缓冲区中待发送的字节数
         char* m_file_address;               // 客户请求的目标文件被mmap到内存中的起始位置

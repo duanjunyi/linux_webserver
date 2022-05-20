@@ -71,7 +71,7 @@ threadpool<T>::threadpool(int thread_number, int max_requests):
                 throw std::exception();
             }
 
-            if(pthread_detach(m_threads + i) != 0)
+            if(pthread_detach(m_threads[i]) != 0)
             {
                 delete [] m_threads;
                 throw std::exception();
@@ -83,7 +83,7 @@ threadpool<T>::threadpool(int thread_number, int max_requests):
 template<typename T>
 threadpool<T>::~threadpool()
 {
-    delete[] mthreads;
+    delete[] m_threads;
     m_stop = true; //m_stop可以做到使所有线程停止吗？
 }
 

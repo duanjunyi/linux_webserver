@@ -12,7 +12,6 @@
 #include "locker.h"
 #include "threadpool.h"
 #include "httpconn.h"
-#include "epoll.h"
 
 const int MAX_FD = 65536; //单进程最大文件描述符数目为1024，所以这里可能存在冗余
 const int MAX_PEND_CONN = 16;
@@ -82,7 +81,8 @@ int main(int argc, char* argv[])
 
     //初始化连接任务
     httpconn* users = new httpconn[MAX_FD];
-    httpconn::m_epollfd = epollObj.m_epollfd;
+    httpconn::m_epollObj = epollObj;
+    httpconn::m_user_count = 0;
 
 
     //忽略SIGPIPE信号
@@ -129,6 +129,7 @@ int main(int argc, char* argv[])
                     }
                     else
                     {
+                        //超过最大用户数
                         if(httpconn::m_user_count >= MAX_FD)
                         {
 
