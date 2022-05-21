@@ -71,7 +71,13 @@ int main(int argc, char* argv[])
 
 
     //生成线程池
-    threadpool<httpconn>* pool = new threadpool<httpconn>;
+    threadpool< httpconn >* pool = NULL;
+    try {
+        pool = new threadpool<httpconn>;
+    } catch( ... ) {
+        return 1;
+    }
+
 
 
     //创建epoll对象并添加监听文件描述符

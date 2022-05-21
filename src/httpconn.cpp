@@ -17,6 +17,12 @@ const char* error_500_form = "There was an unusual problem serving the requested
 const char* doc_root = "/mnt/D/Program/webserver/myProgram/resources";
 
 
+epollCls tempepollCls;
+epollCls httpconn::m_epollObj = tempepollCls;
+int httpconn::m_user_count = 0;
+
+
+
 //关闭连接
 void httpconn::close_conn()
 {
@@ -254,7 +260,7 @@ httpconn::HTTP_CODE httpconn::parse_request_line(char* text)
 httpconn::HTTP_CODE httpconn::parse_headers(char* text)
 {
     // 遇到空行，表示头部字段解析完毕
-    if(text == '\0')
+    if(text[0] == '\0')
     {
         // 如果HTTP请求有消息体，则还需要读取m_content_length字节的消息体，
         // 状态机转移到CHECK_STATE_CONTENT状态
