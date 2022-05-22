@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
 
 
     //生成线程池
-    threadpool< httpconn >* pool = NULL;
+    threadpool<httpconn>* pool = NULL;
     try {
         pool = new threadpool<httpconn>;
     } catch( ... ) {
